@@ -36,18 +36,6 @@ class Extractor:
                 raise FileNotFoundError(f'{expected_cwd} does not exist')
 
     @staticmethod
-    def get_latest_backup(pickup_dir: Path = PICKUP_DIR) -> Path | None:
-        if not pickup_dir.exists():
-            logger.error(f"Pickup directory {pickup_dir} does not exist.")
-            raise FileNotFoundError(f"{pickup_dir} does not exist")
-        files = pickup_dir.glob('backup_*.daylio')
-        if not files:
-            logger.error("No backup files found in the pickup directory.")
-            return None
-        logger.info("Found backup files, returning the latest one.")
-        return max(files, key=os.path.getctime, default=None)
-
-    @staticmethod
     def find_backup_file(pickup_dir: Path = PICKUP_DIR) -> Path | None:
         pickup_path = Path(pickup_dir, datetime.today().strftime(
             'backup_%Y_%m_%d.daylio'))
@@ -62,6 +50,18 @@ class Extractor:
             logger.error(
                 f"{pickup_path.name} does not exist in designated pickup directory: {pickup_dir}")
             raise FileNotFoundError(f"{pickup_path} does not exist")
+
+    @staticmethod
+    def get_latest_backup(pickup_dir: Path = PICKUP_DIR) -> Path | None:
+        if not pickup_dir.exists():
+            logger.error(f"Pickup directory {pickup_dir} does not exist.")
+            raise FileNotFoundError(f"{pickup_dir} does not exist")
+        files = pickup_dir.glob('backup_*.daylio')
+        if not files:
+            logger.error("No backup files found in the pickup directory.")
+            return None
+        logger.info("Found backup files, returning the latest one.")
+        return max(files, key=os.path.getctime, default=None)
 
     @staticmethod
     def get_selected_tables(selected_tables_path: Path = SELECTED_TABLES_PATH) -> list[str]:
@@ -119,6 +119,19 @@ class Extractor:
 
         # copy json to archive
         shutil.copy(json_path, archive_path)
+
+
+def extract_daylio_data():
+    Extractor.set_cwd()
+    backup_file = Extractor.find_backup_file()
+    selected_tables = Extractor.get_selected_tables()
+    if backup_file:
+        Extractor.extract_backup(backup_file)
+        daylio_data = Extractor.decode_backup_to_json()
+        Extractor.save_to_json(daylio_data, selected_tables)
+        Extractor.archive_json()
+    else:
+        logger.error("No backup file found to extract.")
 
 
 if __name__ == "__main__":
