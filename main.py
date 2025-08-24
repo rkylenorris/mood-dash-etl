@@ -1,8 +1,10 @@
+from log_setup import logger
+from extractor.data_extractor import extract_daylio_data
+
+
 def main():
-    print("Hello from daylio-data-cleaner!")
-    from log_setup import logger
-    from extractor.daylio_extractor import get_latest_backup
-    print(get_latest_backup())
+    logger.info("Hello from daylio-data-cleaner!")
+    extract_daylio_data()
 
 
 if __name__ == "__main__":
