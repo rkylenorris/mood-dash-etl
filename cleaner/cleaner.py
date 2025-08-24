@@ -22,7 +22,7 @@ class DaylioCleaner:
     def __init__(self, name: str, table: pd.DataFrame) -> None:
         self.name = name
         self.table = table
-        self.col_info_path = Path("data/table_info.json")
+        self.col_info_path = Path("data/static/table_info.json")
         self.columns = self._load_columns()
         self.column_names = [col.name for col in self.columns]
         self._normalize_dates()
@@ -108,7 +108,7 @@ def create_entry_tags(cleaner: DaylioCleaner) -> DaylioCleaner:
 
 
 def create_mood_groups() -> DaylioCleaner:
-    mood_groups_path = Path("data/mood_groups.json")
+    mood_groups_path = Path("data/static/mood_groups.json")
     df = pd.read_json(mood_groups_path)
     return DaylioCleaner(
         name='mood_groups',
