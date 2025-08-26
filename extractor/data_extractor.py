@@ -16,6 +16,7 @@ PICKUP_DIR = Path(os.getenv('DAYLIO_PICKUP_DIR',
 DATA_DIR = Path.cwd() / "data"
 JSON_PATH = DATA_DIR / "daylio.json"
 SELECTED_TABLES_PATH = DATA_DIR / "static" / "tables_needed.txt"
+LAST_UPDATED_PATH = DATA_DIR / "static" / "last_updated.txt"
 
 
 class Extractor:
@@ -120,18 +121,32 @@ class Extractor:
         # copy json to archive
         shutil.copy(json_path, archive_path)
 
+    @staticmethod
+    def is_new_data(file_name: str) -> bool:
+        if LAST_UPDATED_PATH.exists():
+            last_updated = LAST_UPDATED_PATH.read_text().strip()
+            if last_updated == file_name:
+                logger.info("Data has already been processed.")
+                return False
+            else:
+                LAST_UPDATED_PATH.write_text(file_name)
+                return True
+        else:
+            LAST_UPDATED_PATH.write_text(file_name)
+            return True
+
 
 def extract_daylio_data():
     Extractor.set_cwd()
     backup_file = Extractor.find_backup_file()
-    selected_tables = Extractor.get_selected_tables()
-    if backup_file:
+    if backup_file and Extractor.is_new_data(backup_file.name):
         Extractor.extract_backup(backup_file)
         daylio_data = Extractor.decode_backup_to_json()
+        selected_tables = Extractor.get_selected_tables()
         Extractor.save_to_json(daylio_data, selected_tables)
         Extractor.archive_json()
     else:
-        logger.error("No backup file found to extract.")
+        logger.error("No data to extract.")
 
 
 if __name__ == "__main__":
