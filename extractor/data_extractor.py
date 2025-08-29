@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Module-level config
-EXPECTED_CWD = os.getenv('EXPECTED_WD', 'daylio-mood-dash')
+EXPECTED_CWD = os.getenv('EXPECTED_WD', 'daylio-data-cleaner')
 PICKUP_DIR = Path(os.getenv('DAYLIO_PICKUP_DIR',
                   'C:/Users/YourUsername/Downloads'))
 DATA_DIR = Path.cwd() / "data"
