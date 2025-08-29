@@ -5,6 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "fitbit",
     "pandas>=2.3.1",
     "python-dotenv>=1.1.1",
 ]
+
+[tool.uv.sources]
+fitbit = { git = "https://github.com/orcasgit/python-fitbit.git", rev = "6a0a7cba26c26e6c8096bf51d4cf7f19e113ed96" }
