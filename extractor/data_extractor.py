@@ -11,6 +11,26 @@ load_dotenv()
 
 # Module-level config
 EXPECTED_CWD = os.getenv('EXPECTED_WD', 'daylio-data-cleaner')
+
+
+def set_cwd(expected_cwd=EXPECTED_CWD) -> None:
+    if Path.cwd().name != expected_cwd:
+        logger.info(
+            f"CWD not '{expected_cwd}' searching for correct directory...")
+        for folder in Path.home().rglob(expected_cwd):
+            if folder.is_dir() and folder.name == expected_cwd:
+                logger.info(
+                    f"'{expected_cwd}' directory found, changing working directory")
+                os.chdir(str(folder))
+                break
+        else:
+            logger.error(f"'{expected_cwd}' does not exist on this system")
+            raise FileNotFoundError(f'{expected_cwd} does not exist')
+
+
+# Ensure correct working directory
+set_cwd()
+
 PICKUP_DIR = Path(os.getenv('DAYLIO_PICKUP_DIR',
                   'C:/Users/YourUsername/Downloads'))
 DATA_DIR = Path.cwd() / "data"
@@ -20,21 +40,6 @@ LAST_UPDATED_PATH = DATA_DIR / "static" / "last_updated.txt"
 
 
 class Extractor:
-
-    @staticmethod
-    def set_cwd(expected_cwd=EXPECTED_CWD) -> None:
-        if Path.cwd().name != expected_cwd:
-            logger.info(
-                f"CWD not '{expected_cwd}' searching for correct directory...")
-            for folder in Path.home().rglob(expected_cwd):
-                if folder.is_dir() and folder.name == expected_cwd:
-                    logger.info(
-                        f"'{expected_cwd}' directory found, changing working directory")
-                    os.chdir(str(folder))
-                    break
-            else:
-                logger.error(f"'{expected_cwd}' does not exist on this system")
-                raise FileNotFoundError(f'{expected_cwd} does not exist')
 
     @staticmethod
     def find_backup_file(pickup_dir: Path = PICKUP_DIR) -> Path | None:
@@ -137,7 +142,6 @@ class Extractor:
 
 
 def extract_daylio_data():
-    Extractor.set_cwd()
     backup_file = Extractor.find_backup_file()
     if backup_file and Extractor.is_new_data(backup_file.name):
         Extractor.extract_backup(backup_file)
