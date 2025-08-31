@@ -5,12 +5,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def create_db_conn(db_path: str = "data/daylio.db") -> sqlite3.Connection:
     """
     creates a new database connection to the SQLite database
     :return:
     """
     return sqlite3.connect(db_path)
+
 
 def execute_sql_command(conn: sqlite3.Connection, command: str, commit: bool = True, *args):
     with conn:
@@ -22,13 +24,14 @@ def execute_sql_command(conn: sqlite3.Connection, command: str, commit: bool = T
                 cursor.execute(command, *args)
         else:
             cursor.execute(command)
-            
+
         if commit:
             conn.commit()
         else:
             return cursor.fetchall()
 
-def execute_sql_script(conn: sqlite3.Connection, script_path: str):
+
+def execute_sql_script(conn: sqlite3.Connection, script_path: str, commit: bool = True):
     with conn:
         script = Path(script_path)
         if not script.exists():
@@ -38,7 +41,12 @@ def execute_sql_script(conn: sqlite3.Connection, script_path: str):
         cursor = conn.cursor()
         script_text = script.read_text()
         cursor.executescript(script_text)
-    
+        if commit:
+            conn.commit()
+        else:
+            return cursor.fetchall()
+
+
 def read_sql_view_to_df(conn: sqlite3.Connection, view_name: str) -> pd.DataFrame:
     logger.info(f"Retrieving data from view {view_name}...")
     query = f"SELECT * FROM {view_name}"
