@@ -1,9 +1,7 @@
 import sqlite3
 from pathlib import Path
 import pandas as pd
-import logging
-
-logger = logging.getLogger(__name__)
+from log_setup import logger
 
 
 def create_db_conn(db_path: str = "data/daylio.db") -> sqlite3.Connection:
