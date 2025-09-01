@@ -23,7 +23,7 @@ def main():
         return
 
     if not LAST_UPDATED_PATH.exists():
-        os.remove(LAST_UPDATED_PATH)
+        os.remove(DB_PATH)
         logger.info(f"Database not found at {DB_PATH}, creating new database")
         create_tables()
         add_users()
