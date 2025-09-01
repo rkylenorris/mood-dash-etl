@@ -14,7 +14,7 @@ class UserRole(Enum):
     PROVIDER = 'provider'
 
 
-def add_user(username: str, name: str, password: str, role: UserRole, db_path: str = "data/daylio.db"):
+def add_user(username: str, name: str, password: str, role: UserRole, db_path: str = os.getenv('DB_PATH')):
 
     hashed_password = bcrypt.hashpw(password.encode(
         'utf-8'), bcrypt.gensalt()).decode('utf-8')
