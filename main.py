@@ -6,7 +6,7 @@ from pathlib import Path
 from log_setup import logger
 from dotenv import load_dotenv
 from fitbit_sleep import clean_sleep_data
-from sql_cmds import create_db_conn, insert_prefs, create_tables, create_views, add_users
+from sql_cmds import create_db_conn, insert_prefs, create_tables, create_views, add_users, execute_sql_command
 
 from extractor.data_extractor import extract_daylio_data, DATA_DIR, LAST_UPDATED_PATH
 from cleaner.cleaner import DaylioCleaner, create_entry_tags, create_mood_groups
@@ -17,6 +17,11 @@ load_dotenv()
 def main():
     # set path to db, create if it doesn't exist
     DB_PATH = os.getenv('DB_PATH')
+
+    res = execute_sql_command(create_db_conn(
+        DB_PATH), "SELECT name FROM sqlite_master WHERE type='table';", commit=False)
+
+    logger.info(f"Existing tables in database: {res}")
 
     if not DB_PATH:
         logger.error("DB_PATH not set in environment variables.")
