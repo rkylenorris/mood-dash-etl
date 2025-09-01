@@ -4,7 +4,7 @@ import pandas as pd
 from log_setup import logger
 
 
-def create_db_conn(db_path: str = "data/daylio.db") -> sqlite3.Connection:
+def create_db_conn(db_path) -> sqlite3.Connection:
     """
     creates a new database connection to the SQLite database
     :return:
