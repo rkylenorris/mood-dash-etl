@@ -63,8 +63,8 @@ class DaylioCleaner:
                 if not is_datetime64_any_dtype(col):
                     col = pd.to_datetime(col, errors='coerce', unit='ms')
 
-        self.table[col_name] = col
-        self.table[name_map[col_name]] = col.dt.normalize()
+                self.table[col_name] = col
+                self.table[name_map[col_name]] = col.dt.normalize()
 
     def _modify_custom_moods(self):
         self.table['mood_value'] = 6 - self.table['mood_group_id']
