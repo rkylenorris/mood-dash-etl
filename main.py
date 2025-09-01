@@ -16,11 +16,10 @@ load_dotenv()
 
 def main():
     # set path to db, create if it doesn't exist
-    DB_PATH = Path(os.getenv('DB_PATH', "./mood_dash.db"))
-    logger.info(f"Using database at {DB_PATH}", f"Exists: {DB_PATH.exists()}")
-    if not DB_PATH.exists():
+    DB_PATH = os.getenv('DB_PATH', "./mood_dash.db")
+
+    if not os.path.exists(DB_PATH):
         logger.info(f"Database not found at {DB_PATH}, creating new database")
-        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
         create_tables()
         add_users()
         create_views()
