@@ -18,7 +18,7 @@ create_tables_script = sql_dir / "create_tables.sql"
 create_views_script = sql_dir / "create_views.sql"
 
 
-def create_tables(db_conn=create_db_conn(str(db_path))):
+def create_tables(db_conn=create_db_conn(str(os.getenv('DB_PATH')))):
     logger.info("Executing script to create sql tables in db")
     execute_sql_script(db_conn, str(create_tables_script))
 
