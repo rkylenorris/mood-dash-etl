@@ -84,7 +84,7 @@ class DaylioCleaner:
                 con=engine,
                 if_exists='replace',
                 index=False,
-                dtype={col.name: col.type_name for col in self.columns}
+                # dtype={col.name: col.type_name for col in self.columns}
             )
         else:
             print(f"Table {self.name} is empty, skipping SQL upload.")
