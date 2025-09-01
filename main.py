@@ -34,6 +34,10 @@ def main():
 
     logger.info(f"User count in database: {user_count}")
 
+    if user_count == 0:
+        logger.info("No users found in database, adding default users")
+        add_users()
+
     logger.info("Mood Dash ETL beginning")
     extract_daylio_data()
     daylio_data_path = DATA_DIR / "daylio.json"
