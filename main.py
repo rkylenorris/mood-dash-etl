@@ -17,6 +17,10 @@ load_dotenv()
 def main():
     # set path to db, create if it doesn't exist
     DB_PATH = os.getenv('DB_PATH')
+
+    print(DB_PATH)
+    print(os.path.exists(DB_PATH))
+
     if not DB_PATH:
         logger.error("DB_PATH not set in environment variables.")
         return
