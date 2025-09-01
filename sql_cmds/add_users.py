@@ -7,6 +7,11 @@ from sql_cmds import create_db_conn, execute_sql_command
 
 load_dotenv()
 
+DB_PATH = os.getenv('DB_PATH')
+
+if not DB_PATH:
+    raise ValueError("DB_PATH not set in environment variables.")
+
 
 class UserRole(Enum):
     ADMIN = 'admin'
@@ -14,7 +19,7 @@ class UserRole(Enum):
     PROVIDER = 'provider'
 
 
-def add_user(username: str, name: str, password: str, role: UserRole, db_path: str = os.getenv('DB_PATH')):
+def add_user(username: str, name: str, password: str, role: UserRole, db_path: str = DB_PATH):
 
     hashed_password = bcrypt.hashpw(password.encode(
         'utf-8'), bcrypt.gensalt()).decode('utf-8')
