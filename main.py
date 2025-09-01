@@ -17,18 +17,11 @@ load_dotenv()
 def main():
     # set path to db, create if it doesn't exist
     DB_PATH = os.getenv('DB_PATH')
-
-    res = execute_sql_command(create_db_conn(
-        DB_PATH), "SELECT name FROM sqlite_master WHERE type='table';", commit=False)
-
-    logger.info(f"Existing tables in database: {res}")
-
     if not DB_PATH:
         logger.error("DB_PATH not set in environment variables.")
         return
 
-    if not LAST_UPDATED_PATH.exists():
-        os.remove(DB_PATH)
+    if not Path(DB_PATH).exists():
         logger.info(f"Database not found at {DB_PATH}, creating new database")
         create_tables()
         add_users()
