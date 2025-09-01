@@ -27,17 +27,6 @@ def main():
         add_users()
         create_views()
 
-    user_query = "Select count(*) from users;"
-
-    user_count = execute_sql_command(
-        create_db_conn(DB_PATH), user_query, False)[0][0]
-
-    logger.info(f"User count in database: {user_count}")
-
-    if user_count == 0:
-        logger.info("No users found in database, adding default users")
-        add_users()
-
     logger.info("Mood Dash ETL beginning")
     extract_daylio_data()
     daylio_data_path = DATA_DIR / "daylio.json"
@@ -74,10 +63,10 @@ def main():
 
     logger.info(f"Writing cleaned data to database at {DB_PATH}")
     for table in daylio_tables:
-        table.to_sql(create_db_conn())
+        table.to_sql(create_db_conn(DB_PATH))
     fit_bit_sleep_table = clean_sleep_data()
     fit_bit_sleep_table.to_sql(
-        'fitbit_sleep', create_db_conn(), if_exists='replace', index=False)
+        'fitbit_sleep', create_db_conn(DB_PATH), if_exists='replace', index=False)
 
     logger.info("Mood Dash ETL complete")
 
