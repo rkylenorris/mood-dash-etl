@@ -69,14 +69,11 @@ def main():
     daylio_tables.append(create_mood_groups())
 
     logger.info(f"Writing cleaned data to database at {DB_PATH}")
-    conn = create_db_conn()
     for table in daylio_tables:
-        table.to_sql(conn)
+        table.to_sql(create_db_conn())
     fit_bit_sleep_table = clean_sleep_data()
     fit_bit_sleep_table.to_sql(
-        'fitbit_sleep', conn, if_exists='replace', index=False)
-    conn.commit()
-    conn.close()
+        'fitbit_sleep', create_db_conn(), if_exists='replace', index=False)
 
     logger.info("Mood Dash ETL complete")
 
