@@ -27,6 +27,13 @@ def main():
         add_users()
         create_views()
 
+    user_query = "Select count(*) from users;"
+
+    user_count = execute_sql_command(
+        create_db_conn(DB_PATH), user_query, False).fetchone()[0]
+
+    logger.info(f"User count in database: {user_count}")
+
     logger.info("Mood Dash ETL beginning")
     extract_daylio_data()
     daylio_data_path = DATA_DIR / "daylio.json"
