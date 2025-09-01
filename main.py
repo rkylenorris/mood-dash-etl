@@ -30,7 +30,7 @@ def main():
     user_query = "Select count(*) from users;"
 
     user_count = execute_sql_command(
-        create_db_conn(DB_PATH), user_query, False).fetchone()[0]
+        create_db_conn(DB_PATH), user_query, False)
 
     logger.info(f"User count in database: {user_count}")
 
