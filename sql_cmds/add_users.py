@@ -53,3 +53,7 @@ def add_users():
             password=login["password"],
             role=login["role"]
         )
+
+
+if __name__ == "__main__":
+    add_users()
