@@ -6,7 +6,7 @@ from pathlib import Path
 from log_setup import logger
 from dotenv import load_dotenv
 from fitbit_sleep import clean_sleep_data
-from sql_cmds import create_db_conn, insert_prefs, create_tables, create_views
+from sql_cmds import create_db_conn, insert_prefs, create_tables, create_views, add_users
 
 from extractor.data_extractor import extract_daylio_data, DATA_DIR
 from cleaner.cleaner import DaylioCleaner, create_entry_tags, create_mood_groups
@@ -21,6 +21,7 @@ def main():
         logger.info(f"Database not found at {DB_PATH}, creating new database")
         DB_PATH.parent.mkdir(parents=True, exist_ok=True)
         create_tables()
+        add_users()
         create_views()
 
     logger.info("Mood Dash ETL beginning")
@@ -31,13 +32,17 @@ def main():
 
     daylio_tables = []
 
+    logger.info("Cleaning and loading Daylio data into memory")
     for table_name, table_data in daylio_data.items():
         if table_name == 'prefs':
+            # prefs table is small and consists of one record, so just insert it directly
             insert_prefs(table_data)
             continue
 
+        logger.info(f"Loading data for table '{table_name}'")
         daylio_df = pd.DataFrame(table_data)
 
+        logger.info(f"Cleaning data for table '{table_name}'")
         daylio_table = DaylioCleaner(
             name=table_name,
             table=daylio_df
@@ -46,11 +51,14 @@ def main():
         daylio_tables.append(daylio_table)
 
         if table_name == 'dayEntries':
+            logger.info("Creating entry_tags table from dayEntries")
             entry_tags_table = create_entry_tags(daylio_table)
             daylio_tables.append(entry_tags_table)
 
+    logger.info("Creating mood_groups table")
     daylio_tables.append(create_mood_groups())
 
+    logger.info(f"Writing cleaned data to database at {DB_PATH}")
     conn = create_db_conn()
     for table in daylio_tables:
         table.to_sql(conn)
@@ -59,6 +67,8 @@ def main():
         'fitbit_sleep', conn, if_exists='replace', index=False)
     conn.commit()
     conn.close()
+
+    logger.info("Mood Dash ETL complete")
 
 
 if __name__ == "__main__":
