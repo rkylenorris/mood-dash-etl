@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from fitbit_sleep import clean_sleep_data
 from sql_cmds import create_db_conn, insert_prefs, create_tables, create_views, add_users
 
-from extractor.data_extractor import extract_daylio_data, DATA_DIR
+from extractor.data_extractor import extract_daylio_data, DATA_DIR, LAST_UPDATED_PATH
 from cleaner.cleaner import DaylioCleaner, create_entry_tags, create_mood_groups
 
 load_dotenv()
@@ -18,14 +18,12 @@ def main():
     # set path to db, create if it doesn't exist
     DB_PATH = os.getenv('DB_PATH')
 
-    print(DB_PATH)
-    print(os.path.exists(DB_PATH))
-
     if not DB_PATH:
         logger.error("DB_PATH not set in environment variables.")
         return
 
-    if not os.path.exists(DB_PATH):
+    if not LAST_UPDATED_PATH.exists():
+        os.remove(LAST_UPDATED_PATH)
         logger.info(f"Database not found at {DB_PATH}, creating new database")
         create_tables()
         add_users()
