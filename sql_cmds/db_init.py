@@ -12,7 +12,7 @@ load_dotenv()
 
 home_dir = Path().cwd()
 data_dir = home_dir / "data"
-db_path = os.getenv('DB_PATH', home_dir / "mood_dash.db")
+db_path = os.getenv('DB_PATH')
 sql_dir = home_dir / "sql"
 create_tables_script = sql_dir / "create_tables.sql"
 create_views_script = sql_dir / "create_views.sql"
