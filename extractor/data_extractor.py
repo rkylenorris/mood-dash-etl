@@ -150,7 +150,7 @@ def extract_daylio_data():
         Extractor.save_to_json(daylio_data, selected_tables)
         Extractor.archive_json()
     else:
-        logger.error("No data to extract.")
+        logger.warning("No data to extract.")
 
 
 if __name__ == "__main__":
