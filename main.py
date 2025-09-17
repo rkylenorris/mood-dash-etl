@@ -3,7 +3,7 @@ import json
 import pandas as pd
 
 from pathlib import Path
-from log_setup import logger
+from log_setup import setup_logger
 from dotenv import load_dotenv
 from fitbit_sleep import clean_sleep_data
 from sql_cmds import create_db_conn, insert_prefs, create_tables, create_views, add_users, execute_sql_command
@@ -12,6 +12,8 @@ from extractor.data_extractor import extract_daylio_data, DATA_DIR, LAST_UPDATED
 from cleaner.cleaner import DaylioCleaner, create_entry_tags, create_mood_groups
 
 load_dotenv()
+
+logger = setup_logger()
 
 
 def main():

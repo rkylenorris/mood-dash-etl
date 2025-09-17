@@ -1,7 +1,9 @@
 import sqlite3
 from pathlib import Path
 import pandas as pd
-from log_setup import logger
+from log_setup import setup_logger
+
+logger = setup_logger()
 
 
 def create_db_conn(db_path) -> sqlite3.Connection:

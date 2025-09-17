@@ -5,10 +5,13 @@ from typing import List
 from pathlib import Path
 from dotenv import load_dotenv
 from dataclasses import dataclass
+from log_setup import setup_logger
 
 from pandas.api.types import is_datetime64_any_dtype
 
 load_dotenv()
+
+logger = setup_logger()
 
 
 @dataclass
@@ -87,7 +90,7 @@ class DaylioCleaner:
                 # dtype={col.name: col.type_name for col in self.columns}
             )
         else:
-            print(f"Table {self.name} is empty, skipping SQL upload.")
+            logger.warning(f"Table {self.name} is empty, skipping SQL upload.")
 
 
 def create_entry_tags(cleaner: DaylioCleaner) -> DaylioCleaner:

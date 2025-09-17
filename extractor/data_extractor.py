@@ -5,12 +5,14 @@ import base64
 import json
 import zipfile as zf
 import shutil
-from log_setup import logger
+from log_setup import setup_logger
 from dotenv import load_dotenv
 load_dotenv()
 
 # Module-level config
 EXPECTED_CWD = os.getenv('EXPECTED_WD', 'daylio-data-cleaner')
+
+logger = setup_logger()
 
 
 def set_cwd(expected_cwd=EXPECTED_CWD) -> None:

@@ -1,6 +1,6 @@
 import os
 
-from log_setup import logger
+from log_setup import setup_logger
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -9,6 +9,8 @@ from .calendar_cmds import create_rolling_calendar
 
 from .sql_cmds import create_db_conn, execute_sql_script, Path, execute_sql_command
 load_dotenv()
+
+logger = setup_logger()
 
 home_dir = Path().cwd()
 data_dir = home_dir / "data"
